@@ -1,19 +1,34 @@
 # OnActionBar
 Detects whether or not iOS Safari's user interface is in its initial state or collapsed state.
 
-![Preview](https://im2.ezgif.com/tmp/ezgif-2-9400205f92.gif)
+![Preview](https://d26dzxoao6i3hh.cloudfront.net/items/1u0V0Z3m3M3Y090L0v2T/ezgif-2-9400205f92.gif?v=dcdf51af)
+
+*Note: `actionBarHeight` is removed since this is consistent across devices (44px)
 
 ## What and why
-There have been many times where I wished Apple would come up with some sort of CSS/any kind of hook when the navigation bar and action bar collapses on initial scroll and scroll up. The reasons for wanting such a thing might be because of a fixed position element that requires the full viewport height– or anything that needs be done that requires a viewport height.
+There have been many times where I wished Apple would come up with some sort of CSS/any kind of hook when the navigation bar and action bar collapses on initial scroll and scroll up. This is not likely to happen, since Apple is firm about it being a feature. The reasons for wanting such a thing might be because of a fixed position element that requires the full viewport height or just anything that takes in a 100vh dimension; this works well on desktop, chrome, etc. but is a pain when you're dealing with Safari's collapsing mobile UI.
 
 I haven't really found anything that "exposed" this event so I went ahead and attempted to do just that.
-This little snippet (945 bytes) simply checks whether or not the UI is `collapsed` on a mobile device and allows for the user to do things when the event happens.
+This little snippet (934 bytes) simply checks whether or not the UI is `collapsed` on a mobile device and allows for the user to do things when the event happens.
+
+The module provides the following data:
+
+```
+{
+  initialHeight: int, -> the height of the viewport when the page loads (UI is visible)
+  collapsedHeight: int, -> the height of the viewport when the UI is collapsed
+  isCollapsed: bool
+}
+```
+
+## Usage
+Create a new `OnActionBar` instance which only gets instantiated if the device is iOS (iPhone/iPad). You can pass `onInit`, `onVisible`, `onCollapse` callbacks within the options, as well as toggling `setAttribute` which sets a class on the document when a change in the UI occurs (`.is-actionbar` and the device class `.iphone`/`.ipad`).
 
 ```js
 new OnActionBar({
-  onInit: data => onInit(data),
-  onVisible: data => onVisible(data),
-  onCollapse: data => onCollapse(data),
+  onInit: data => onInit(data), // fires when instatiated
+  onVisible: data => onVisible(data), // when the UI expands (visible)
+  onCollapse: data => onCollapse(data), // when the UI minimizes
   setAttribute: true // set classes on root element
 });
 
